@@ -1,0 +1,1313 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Front Row Athlete Agency</title>
+<meta name="description" content="アスリートが『競技人』をこえ、著名人となるための後押しを。スポーツ代理人事業・スポンサーシップコンサルティング。">
+
+<!-- Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://cdnjs.cloudflare.com">
+<link rel="preconnect" href="https://cdn.jsdelivr.net">
+<link rel="preconnect" href="https://unpkg.com">
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Inter:wght@300;400;500&family=Noto+Sans+JP:wght@400&display=swap" rel="stylesheet">
+
+<style>
+/* ===== Reset & Base ===== */
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+html { overflow-x: clip; scroll-behavior: auto; }
+body {
+  background: #0a0a0a;
+  color: #fff;
+  font-family: 'Inter', 'Noto Sans JP', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+}
+img { max-width: 100%; display: block; }
+a { color: inherit; text-decoration: none; }
+
+/* ===== CSS Variables ===== */
+:root {
+  --bg: #0a0a0a;
+  --text: #ffffff;
+  --text-dim: rgba(255,255,255,0.45);
+  --text-mid: rgba(255,255,255,0.7);
+  --accent: #9acd32;
+  --font-heading: 'Archivo Black', sans-serif;
+  --font-body: 'Inter', 'Noto Sans JP', sans-serif;
+  --font-serif: 'Georgia', serif;
+  --max-w: 1200px;
+  --px: clamp(20px, 5vw, 80px);
+}
+
+/* ===== Utility ===== */
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0,0,0,0); }
+.reveal { opacity: 0; transform: translateY(30px); }
+
+/* ===== Noise Overlay (global) ===== */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+  background-size: 128px;
+  pointer-events: none;
+  z-index: 9999;
+}
+
+/* ===== Navigation ===== */
+.nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 1000;
+  padding: 20px var(--px);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  mix-blend-mode: difference;
+}
+.nav-logo img {
+  height: 28px;
+  width: auto;
+  filter: brightness(0) invert(1);
+}
+.nav-links {
+  display: none;
+  list-style: none;
+  gap: 32px;
+}
+.nav-links a {
+  font-size: 0.7rem;
+  font-weight: 500;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--text-mid);
+  transition: color 0.3s;
+}
+.nav-links a:hover { color: var(--text); }
+
+/* Hamburger */
+.nav-hamburger {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  cursor: pointer;
+  padding: 8px;
+  z-index: 1001;
+}
+.nav-hamburger span {
+  width: 24px;
+  height: 1.5px;
+  background: #fff;
+  transition: transform 0.3s, opacity 0.3s;
+}
+.nav-hamburger.open span:nth-child(1) { transform: rotate(45deg) translate(4.5px, 4.5px); }
+.nav-hamburger.open span:nth-child(2) { opacity: 0; }
+.nav-hamburger.open span:nth-child(3) { transform: rotate(-45deg) translate(4.5px, -4.5px); }
+
+/* Mobile menu overlay */
+.nav-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.95);
+  z-index: 999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.4s;
+}
+.nav-overlay.open { opacity: 1; pointer-events: all; }
+.nav-overlay ul {
+  list-style: none;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+.nav-overlay a {
+  font-family: var(--font-heading);
+  font-size: 1.6rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+@media (min-width: 768px) {
+  .nav-links { display: flex; }
+  .nav-hamburger { display: none; }
+}
+
+/* ===== [1] HERO ===== */
+.hero {
+  position: relative;
+  height: 100vh;
+  min-height: 600px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+.hero-bg {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+.hero-bg img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 30%;
+  filter: brightness(0.42) grayscale(100%);
+  opacity: 0;
+  transition: opacity 1.5s ease;
+}
+.hero-bg img.active {
+  opacity: 1;
+  animation: kenBurns 25s ease-in-out infinite alternate;
+}
+@keyframes kenBurns {
+  0% { transform: scale(1); }
+  100% { transform: scale(1.08); }
+}
+.hero-content {
+  position: relative;
+  z-index: 2;
+  text-align: center;
+  padding: 0 var(--px);
+}
+.hero-title {
+  font-size: clamp(2.2rem, 7vw, 5.5rem);
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+  margin-bottom: 0;
+}
+.hero-title .line-serif {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-weight: 400;
+}
+.hero-title .line-sans {
+  font-family: var(--font-heading);
+}
+.hero-subtitle {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: clamp(0.8rem, 1.4vw, 1rem);
+  color: var(--text-dim);
+  letter-spacing: 0.04em;
+  margin-top: 20px;
+  opacity: 0;
+  transform: translateY(10px);
+}
+.hero-title .line { display: block; overflow: hidden; white-space: nowrap; }
+.hero-title .char {
+  display: inline-block;
+  opacity: 0;
+  transform: translateY(100%);
+}
+.hero-scroll-hint {
+  position: absolute;
+  bottom: 32px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+.hero-scroll-hint span {
+  font-size: 0.6rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+}
+.scroll-line {
+  width: 1px;
+  height: 40px;
+  background: linear-gradient(to bottom, rgba(255,255,255,0.4), transparent);
+  animation: scrollPulse 2s ease-in-out infinite;
+}
+@keyframes scrollPulse {
+  0%, 100% { opacity: 0.3; transform: scaleY(0.6); }
+  50% { opacity: 1; transform: scaleY(1); }
+}
+
+/* ===== [2] PARTNER LOGOS ===== */
+.partners-bar {
+  padding: 24px 0;
+  overflow: hidden;
+  border-top: 1px solid rgba(255,255,255,0.06);
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+.marquee {
+  display: flex;
+  gap: 48px;
+  animation: marqueeScroll 25s linear infinite;
+  width: max-content;
+}
+.marquee img {
+  height: 28px;
+  min-width: 48px;
+  width: auto;
+  object-fit: contain;
+  filter: brightness(0) invert(1);
+  mix-blend-mode: screen;
+  opacity: 0.6;
+  transition: opacity 0.3s;
+}
+.marquee img:hover { opacity: 1; }
+.marquee img[alt="Nitro"],
+.marquee img[alt="G-SHOCK"] { height: 20px; min-width: 60px; }
+@media (min-width: 768px) {
+  .marquee img[alt="Nitro"],
+  .marquee img[alt="G-SHOCK"] { height: 24px; min-width: 72px; }
+}
+@keyframes marqueeScroll {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+@media (min-width: 768px) {
+  .marquee img { height: 28px; }
+  .marquee { gap: 64px; }
+}
+
+/* ===== [3] STATEMENT ===== */
+.statement {
+  padding: clamp(80px, 12vh, 160px) var(--px);
+  max-width: 900px;
+  margin: 0 auto;
+  text-align: center;
+}
+.statement-ja {
+  font-family: 'Noto Sans JP', sans-serif;
+  font-size: clamp(1.3rem, 3vw, 2rem);
+  font-weight: 400;
+  line-height: 1.8;
+  letter-spacing: 0.04em;
+  color: var(--text);
+  text-wrap: balance;
+}
+.statement-en {
+  display: block;
+  margin-top: 20px;
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: clamp(0.85rem, 1.5vw, 1.1rem);
+  color: var(--text-dim);
+  letter-spacing: 0.03em;
+}
+
+/* ===== [4] ATHLETES ===== */
+.athletes {
+  padding: clamp(60px, 10vh, 120px) var(--px);
+  max-width: var(--max-w);
+  margin: 0 auto;
+}
+.section-eyebrow {
+  font-family: 'SF Mono', 'Fira Code', monospace;
+  font-size: 0.65rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  margin-bottom: 40px;
+}
+
+/* Featured athletes (big cards) */
+.athletes-featured {
+  display: grid;
+  gap: 24px;
+  margin-bottom: 48px;
+}
+.athlete-feature {
+  position: relative;
+  border-radius: 14px;
+  overflow: hidden;
+  aspect-ratio: 3/4;
+  cursor: pointer;
+}
+.athlete-feature img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: grayscale(100%) brightness(0.7);
+  transition: filter 0.6s, transform 0.6s;
+}
+.athlete-feature:hover img {
+  filter: grayscale(0%) brightness(1);
+  transform: scale(1.03);
+}
+.athlete-feature-info {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  padding: 28px 24px;
+  background: linear-gradient(transparent, rgba(0,0,0,0.9));
+}
+.athlete-feature-name {
+  font-family: var(--font-heading);
+  font-size: clamp(1.2rem, 2.5vw, 1.8rem);
+  text-transform: uppercase;
+  letter-spacing: -0.01em;
+}
+.athlete-feature-meta {
+  font-size: 0.7rem;
+  color: var(--text-dim);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-top: 4px;
+}
+.athlete-feature-brands {
+  display: flex;
+  gap: 12px;
+  margin-top: 12px;
+  align-items: center;
+}
+.athlete-feature-brands img {
+  height: 16px;
+  width: auto;
+  filter: brightness(0) invert(1);
+  opacity: 0.5;
+}
+
+@media (min-width: 768px) {
+  .athletes-featured {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+/* Grid athletes (compact) */
+.athletes-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+}
+.athlete-card {
+  position: relative;
+  border-radius: 10px;
+  overflow: hidden;
+  aspect-ratio: 3/4;
+  cursor: pointer;
+}
+.athlete-card img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: grayscale(100%) brightness(0.6);
+  transition: filter 0.5s, transform 0.5s;
+}
+.athlete-card:hover img {
+  filter: grayscale(0%) brightness(1);
+  transform: scale(1.04);
+}
+.athlete-card-info {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  padding: 14px 12px;
+  background: linear-gradient(transparent, rgba(0,0,0,0.85));
+}
+.athlete-card-name {
+  font-family: var(--font-heading);
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+.athlete-card-sport {
+  font-size: 0.55rem;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-top: 2px;
+}
+
+@media (min-width: 768px) {
+  .athletes-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+  }
+}
+@media (min-width: 1024px) {
+  .athletes-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+/* ===== [5] SERVICES ===== */
+.services {
+  padding: clamp(60px, 10vh, 120px) var(--px);
+  max-width: var(--max-w);
+  margin: 0 auto;
+  border-top: 1px solid rgba(255,255,255,0.06);
+}
+.services-grid {
+  display: grid;
+  gap: 48px;
+  margin-top: 40px;
+}
+@media (min-width: 768px) {
+  .services-grid { grid-template-columns: 1fr 1fr; gap: 64px; }
+}
+.service-block h3 {
+  font-family: var(--font-heading);
+  font-size: clamp(0.9rem, 1.5vw, 1.1rem);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 16px;
+}
+.service-block p {
+  font-size: 0.85rem;
+  line-height: 1.8;
+  color: var(--text-mid);
+  font-weight: 300;
+}
+.service-block ul {
+  list-style: none;
+  margin-top: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.service-block li {
+  font-size: 0.75rem;
+  color: var(--text-dim);
+  letter-spacing: 0.05em;
+  padding-left: 12px;
+  position: relative;
+}
+.service-block li::before {
+  content: '—';
+  position: absolute;
+  left: 0;
+  color: var(--text-dim);
+}
+
+/* ===== [6] NEWS ===== */
+.news {
+  padding: clamp(60px, 10vh, 120px) var(--px);
+  max-width: var(--max-w);
+  margin: 0 auto;
+  border-top: 1px solid rgba(255,255,255,0.06);
+}
+.news-list {
+  margin-top: 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+.news-item {
+  display: flex;
+  align-items: baseline;
+  gap: 16px;
+  padding: 20px 0;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+  transition: background 0.3s;
+}
+.news-item:first-child { border-top: 1px solid rgba(255,255,255,0.06); }
+.news-item:hover { background: rgba(255,255,255,0.02); }
+.news-date {
+  font-size: 0.65rem;
+  color: var(--text-dim);
+  letter-spacing: 0.05em;
+  white-space: nowrap;
+  min-width: 80px;
+  font-variant-numeric: tabular-nums;
+}
+.news-title {
+  font-size: 0.85rem;
+  color: var(--text-mid);
+  line-height: 1.5;
+  transition: color 0.3s;
+}
+.news-item:hover .news-title { color: var(--text); }
+
+/* ===== [7] ABOUT ===== */
+.about {
+  padding: clamp(60px, 10vh, 120px) var(--px);
+  max-width: var(--max-w);
+  margin: 0 auto;
+  border-top: 1px solid rgba(255,255,255,0.06);
+}
+.about-content {
+  display: grid;
+  gap: 40px;
+  margin-top: 40px;
+}
+@media (min-width: 768px) {
+  .about-content { grid-template-columns: 1fr 1.4fr; gap: 60px; align-items: start; }
+}
+.about-photo {
+  border-radius: 12px;
+  overflow: hidden;
+  aspect-ratio: 4/5;
+}
+.about-photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 20%;
+}
+.about-name {
+  font-family: var(--font-heading);
+  font-size: clamp(1.1rem, 2vw, 1.5rem);
+  text-transform: uppercase;
+  letter-spacing: -0.01em;
+}
+.about-role {
+  font-size: 0.7rem;
+  color: var(--text-dim);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-top: 4px;
+  margin-bottom: 24px;
+}
+.about-credentials {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.credential {
+  padding-left: 16px;
+  border-left: 1px solid rgba(255,255,255,0.15);
+}
+.credential-num {
+  font-family: var(--font-heading);
+  font-size: 0.6rem;
+  color: var(--text-dim);
+  letter-spacing: 0.1em;
+  margin-bottom: 4px;
+}
+.credential-text {
+  font-size: 0.8rem;
+  line-height: 1.6;
+  color: var(--text-mid);
+  font-weight: 300;
+}
+.about-board {
+  margin-top: 32px;
+  padding-top: 24px;
+  border-top: 1px solid rgba(255,255,255,0.06);
+}
+.about-board-label {
+  font-size: 0.6rem;
+  color: var(--text-dim);
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+.about-board-name {
+  font-size: 0.85rem;
+  color: var(--text-mid);
+}
+
+/* ===== [8] CONTACT ===== */
+.contact {
+  padding: clamp(80px, 12vh, 160px) var(--px);
+  text-align: center;
+  border-top: 1px solid rgba(255,255,255,0.06);
+}
+.contact h2 {
+  font-family: var(--font-heading);
+  font-size: clamp(2rem, 5vw, 3.5rem);
+  text-transform: uppercase;
+  letter-spacing: -0.02em;
+  margin-bottom: 24px;
+}
+.contact-email {
+  display: inline-block;
+  font-size: clamp(0.8rem, 1.5vw, 1rem);
+  color: var(--text-mid);
+  letter-spacing: 0.05em;
+  padding: 12px 0;
+  border-bottom: 1px solid rgba(255,255,255,0.2);
+  transition: color 0.3s, border-color 0.3s;
+}
+.contact-email:hover {
+  color: var(--text);
+  border-color: var(--text);
+}
+.contact-address {
+  margin-top: 24px;
+  font-size: 0.7rem;
+  color: var(--text-dim);
+  line-height: 1.8;
+}
+
+/* ===== FOOTER ===== */
+.footer {
+  padding: 24px var(--px);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-top: 1px solid rgba(255,255,255,0.06);
+  font-size: 0.6rem;
+  color: var(--text-dim);
+  letter-spacing: 0.05em;
+}
+.footer-social {
+  display: flex;
+  gap: 16px;
+}
+.footer-social a {
+  color: var(--text-dim);
+  transition: color 0.3s;
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+.footer-social a:hover { color: var(--text); }
+
+/* ===== [4.5] HIGHLIGHTS 3D Carousel ===== */
+.highlights {
+  padding: clamp(60px, 10vh, 120px) var(--px);
+  max-width: var(--max-w);
+  margin: 0 auto;
+  border-top: 1px solid rgba(255,255,255,0.06);
+  text-align: center;
+}
+.highlights-stage {
+  perspective: 1200px;
+  perspective-origin: 50% 50%;
+  width: 100%;
+  height: 280px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 40px 0 24px;
+}
+.highlights-pivot {
+  width: 0; height: 0; position: relative;
+  transform-style: preserve-3d;
+}
+.highlights-carousel {
+  transform-style: preserve-3d;
+  animation: hlSpin 35s linear infinite;
+}
+@keyframes hlSpin { to { transform: rotateY(360deg); } }
+
+.hl-card {
+  position: absolute;
+  width: 160px;
+  height: 210px;
+  left: -80px;
+  top: -105px;
+  border-radius: 12px;
+  overflow: hidden;
+  background: rgba(255,255,255,0.04);
+  background-size: cover;
+  background-position: center;
+  border: 1px solid rgba(255,255,255,0.08);
+  text-decoration: none;
+  color: #fff;
+  display: flex;
+  align-items: flex-end;
+  transition: border-color 0.3s;
+  backface-visibility: hidden;
+}
+.hl-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to bottom, rgba(0,0,0,0.2), rgba(0,0,0,0.85));
+  z-index: 1;
+}
+.hl-card-inner { position: relative; z-index: 2; }
+.hl-card:hover {
+  border-color: rgba(255,255,255,0.3);
+}
+.hl-card-inner {
+  padding: 16px;
+  width: 100%;
+}
+.hl-card-tag {
+  font-size: 0.5rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  margin-bottom: 8px;
+}
+.hl-card-title {
+  font-family: var(--font-heading);
+  font-size: 0.75rem;
+  line-height: 1.4;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  margin-bottom: 6px;
+}
+.hl-card-desc {
+  font-size: 0.6rem;
+  color: var(--text-dim);
+  line-height: 1.5;
+}
+.hl-bottom {
+  text-align: center;
+}
+
+@media (min-width: 768px) {
+  .highlights-stage { height: 320px; perspective: 1400px; }
+  .hl-card { width: 190px; height: 250px; left: -95px; top: -125px; }
+  .hl-card-title { font-size: 0.85rem; }
+}
+@media (min-width: 1024px) {
+  .highlights-stage { height: 360px; perspective: 1600px; }
+  .hl-card { width: 210px; height: 280px; left: -105px; top: -140px; }
+  .hl-card-title { font-size: 0.9rem; }
+}
+
+/* ===== 改行制御 ===== */
+.pc-br { display: none; }
+.sp-br { display: inline; }
+@media (min-width: 768px) { .pc-br { display: inline; } .sp-br { display: none; } }
+
+/* ===== Mobile-specific ===== */
+@media (max-width: 767px) {
+  .hero-title { letter-spacing: -0.01em; font-size: clamp(1.55rem, 6.5vw, 5.5rem); }
+  .hero-subtitle { font-size: 0.875rem; }
+  .athlete-feature-brands { display: none; }
+  /* SP: font-size minimum 14px = 0.875rem */
+  .athlete-feature-meta { font-size: 0.875rem; letter-spacing: 0.03em; }
+  .athlete-card-name { font-size: 0.75rem; letter-spacing: 0.01em; }
+  .athlete-card-sport { font-size: 0.6875rem; letter-spacing: 0.04em; }
+  .marquee { gap: 32px; }
+  .nav-hamburger { min-width: 44px; min-height: 44px; padding: 12px; justify-content: center; align-items: center; }
+  /* nav-logo touch target */
+  .nav-logo { display: flex; align-items: center; min-height: 44px; padding: 8px 0; }
+  .service-block p { font-size: 0.875rem; }
+  .service-block li { font-size: 0.875rem; }
+  .news-title { font-size: 0.875rem; }
+  .news-date { min-width: 60px; font-size: 0.875rem; }
+  .news-item { gap: 12px; }
+  .credential-text { font-size: 0.875rem; }
+  .contact-email { font-size: 0.875rem; padding: 16px 0; word-break: normal; overflow-wrap: break-word; }
+  /* SP: statement-en minimum 14px */
+  .statement-en { font-size: 0.875rem; }
+  /* SP: section-eyebrow legibility */
+  .section-eyebrow { font-size: 0.6875rem; }
+  /* SP: hl-card texts */
+  .hl-card-tag { font-size: 0.6875rem; }
+  .hl-card-desc { font-size: 0.75rem; }
+  /* SP: credential-num */
+  .credential-num { font-size: 0.75rem; }
+  /* SP: about-role */
+  .about-role { font-size: 0.875rem; }
+  /* SP: social links touch target */
+  .about-social a {
+    font-size: 0.75rem !important;
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+    padding: 10px 0;
+  }
+  /* SP: explore-link touch target */
+  .explore-link { display: inline-flex; align-items: center; min-height: 44px; padding: 12px 20px; }
+  /* SP: footer instagram link touch target */
+  footer a, .footer a { min-height: 44px; display: inline-flex; align-items: center; padding: 10px 0; }
+
+  /* ===== Highlights: SPでも3D回転（小さいカード） ===== */
+  .highlights-stage { height: 240px; perspective: 800px; }
+  .hl-card { width: 120px; height: 170px; left: -60px; top: -85px; border-radius: 10px; }
+  .hl-card-title { font-size: 0.6rem; }
+  .hl-card-desc { font-size: 0.5rem; }
+  .hl-card-tag { font-size: 0.4rem; }
+  .hl-card-inner { padding: 10px; }
+}
+
+/* ===== Reduced Motion ===== */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  .reveal { opacity: 1; transform: none; }
+  .hero-title .char { opacity: 1; transform: none; }
+  .hero-subtitle { opacity: 1; transform: none; }
+}
+
+/* ===== Touch ===== */
+body { touch-action: pan-y pinch-zoom; }
+</style>
+</head>
+<body>
+
+<!-- Navigation -->
+<nav class="nav">
+  <a href="#" class="nav-logo">
+    <img src="images/fraa-logo.png" alt="FRAA">
+  </a>
+  <ul class="nav-links">
+    <li><a href="#athletes">Athletes</a></li>
+    <li><a href="#about">About</a></li>
+    <li><a href="#news">News</a></li>
+    <li><a href="#profile">Profile</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+  <div class="nav-hamburger" id="hamburger" onclick="toggleMenu()">
+    <span></span><span></span><span></span>
+  </div>
+</nav>
+
+<!-- Mobile menu overlay -->
+<div class="nav-overlay" id="mobileMenu">
+  <ul>
+    <li><a href="#athletes" onclick="toggleMenu()">Athletes</a></li>
+    <li><a href="#about" onclick="toggleMenu()">About</a></li>
+    <li><a href="#news" onclick="toggleMenu()">News</a></li>
+    <li><a href="#profile" onclick="toggleMenu()">Profile</a></li>
+    <li><a href="#contact" onclick="toggleMenu()">Contact</a></li>
+  </ul>
+</div>
+
+<!-- [1] HERO -->
+<section class="hero">
+  <div class="hero-bg" id="heroBg">
+    <img src="images/hero/hero-snowboard.jpg" alt="" fetchpriority="high" class="active">
+    <img src="images/hero/hero-event.jpg" alt="" loading="lazy">
+    <img src="images/sports/snowboarding.jpg" alt="" loading="lazy">
+    <img src="images/sports/windsurfing.jpg" alt="" loading="lazy">
+    <img src="images/sports/skateboarding.jpg" alt="" loading="lazy">
+    <img src="images/sports/skiing.jpg" alt="" loading="lazy">
+    <img src="images/misc/haruki-action.jpg" alt="" loading="lazy">
+  </div>
+  <div class="hero-content">
+    <h1 class="hero-title" id="heroTitle">
+      <span class="line line-serif">Front Row</span>
+      <span class="line line-sans">Athlete Agency</span>
+    </h1>
+    <p class="hero-subtitle" id="heroSub">Where athletes become culture.</p>
+  </div>
+  <div class="hero-scroll-hint">
+    <span>Scroll</span>
+    <div class="scroll-line"></div>
+  </div>
+</section>
+
+<!-- [2] PARTNER LOGOS -->
+<div class="partners-bar">
+  <div class="marquee" id="marquee">
+    <img src="images/partners/redbull.png" alt="Red Bull">
+    <img src="images/partners/adidas.png" alt="Adidas">
+    <img src="images/partners/oakley.png" alt="Oakley">
+    <img src="images/partners/gopro.png" alt="GoPro">
+    <img src="images/partners/nitro.svg" alt="Nitro">
+    <img src="images/partners/g-shock.png" alt="G-SHOCK">
+    <img src="images/partners/garmin.png" alt="Garmin">
+    <img src="images/partners/hydroflask.png" alt="HydroFlask">
+    <!-- Duplicate for seamless loop -->
+    <img src="images/partners/redbull.png" alt="Red Bull">
+    <img src="images/partners/adidas.png" alt="Adidas">
+    <img src="images/partners/oakley.png" alt="Oakley">
+    <img src="images/partners/gopro.png" alt="GoPro">
+    <img src="images/partners/nitro.svg" alt="Nitro">
+    <img src="images/partners/g-shock.png" alt="G-SHOCK">
+    <img src="images/partners/garmin.png" alt="Garmin">
+    <img src="images/partners/hydroflask.png" alt="HydroFlask">
+  </div>
+</div>
+
+<!-- [3] STATEMENT -->
+<section class="statement reveal">
+  <p class="statement-ja">アスリートが<br class="sp-br">「競技人」をこえ、<br class="pc-br">『著名人』となるための<br class="sp-br">後押しを。</p>
+  <span class="statement-en">Empowering athletes beyond the game.</span>
+</section>
+
+<!-- [4] ATHLETES -->
+<section class="athletes" id="athletes">
+  <div class="section-eyebrow">Athletes</div>
+
+  <!-- Featured 2 -->
+  <div class="athletes-featured">
+    <div class="athlete-feature reveal" data-tilt data-tilt-max="4" data-tilt-speed="600" data-tilt-glare data-tilt-max-glare="0.08">
+      <img src="images/athletes/miyabi-onitsuka.jpg" alt="Miyabi Onitsuka" loading="lazy">
+      <div class="athlete-feature-info">
+        <div class="athlete-feature-name">Miyabi Onitsuka</div>
+        <div class="athlete-feature-meta">Snowboard — World Championship Youngest Winner</div>
+        <div class="athlete-feature-brands">
+          <img src="images/partners/redbull.png" alt="Red Bull">
+          <img src="images/partners/burton.png" alt="Burton">
+          <img src="images/partners/g-shock.png" alt="G-SHOCK">
+        </div>
+      </div>
+    </div>
+    <div class="athlete-feature reveal" data-tilt data-tilt-max="4" data-tilt-speed="600" data-tilt-glare data-tilt-max-glare="0.08">
+      <img src="images/athletes/takeru-otsuka.jpg" alt="Takeru Otsuka" loading="lazy">
+      <div class="athlete-feature-info">
+        <div class="athlete-feature-name">Takeru Otsuka</div>
+        <div class="athlete-feature-meta">Snowboard — X Games Youngest Back-to-Back Champion</div>
+        <div class="athlete-feature-brands">
+          <img src="images/partners/redbull.png" alt="Red Bull">
+          <img src="images/partners/burton.png" alt="Burton">
+          <img src="images/partners/oakley.png" alt="Oakley">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Grid 11 -->
+  <div class="athletes-grid">
+    <div class="athlete-card reveal">
+      <img src="images/athletes/haruki-takeuchi.jpg" alt="Haruki Takeuchi" loading="lazy">
+      <div class="athlete-card-info">
+        <div class="athlete-card-name">Haruki Takeuchi</div>
+        <div class="athlete-card-sport">Snowboard — Freeride</div>
+      </div>
+    </div>
+    <div class="athlete-card reveal">
+      <img src="images/athletes/cool-wakushima.jpg" alt="Cool Wakushima" loading="lazy">
+      <div class="athlete-card-info">
+        <div class="athlete-card-name">Cool Wakushima</div>
+        <div class="athlete-card-sport">Snowboard</div>
+      </div>
+    </div>
+    <div class="athlete-card reveal">
+      <img src="images/athletes/tatsuya-yamagishi.jpg" alt="Tatsuya Yamagishi" loading="lazy">
+      <div class="athlete-card-info">
+        <div class="athlete-card-name">Tatsuya Yamagishi</div>
+        <div class="athlete-card-sport">Skiing</div>
+      </div>
+    </div>
+    <div class="athlete-card reveal">
+      <img src="images/athletes/takuma-sugi.jpg" alt="Takuma Sugi" loading="lazy">
+      <div class="athlete-card-info">
+        <div class="athlete-card-name">Takuma Sugi</div>
+        <div class="athlete-card-sport">Windsurfing</div>
+      </div>
+    </div>
+    <div class="athlete-card reveal">
+      <img src="images/athletes/gunjo-shiji.jpg" alt="Gunjo Shiji" loading="lazy">
+      <div class="athlete-card-info">
+        <div class="athlete-card-name">Gunjo Shiji</div>
+        <div class="athlete-card-sport">Skateboard — Park</div>
+      </div>
+    </div>
+    <div class="athlete-card reveal">
+      <img src="images/athletes/max-berguin.jpg" alt="Max Berguin" loading="lazy">
+      <div class="athlete-card-info">
+        <div class="athlete-card-name">Max Berguin</div>
+        <div class="athlete-card-sport">Skateboard — Street</div>
+      </div>
+    </div>
+    <div class="athlete-card reveal">
+      <img src="images/athletes/naru-nishimoto.jpg" alt="Naru Nishimoto" loading="lazy">
+      <div class="athlete-card-info">
+        <div class="athlete-card-name">Naru Nishimoto</div>
+        <div class="athlete-card-sport">Street Kendama</div>
+      </div>
+    </div>
+    <div class="athlete-card reveal">
+      <img src="images/athletes/mane-yousuf.jpg" alt="Mane Yousuf" loading="lazy">
+      <div class="athlete-card-info">
+        <div class="athlete-card-name">Mane Yousuf</div>
+        <div class="athlete-card-sport">Fitness Creator</div>
+      </div>
+    </div>
+    <div class="athlete-card reveal">
+      <img src="images/athletes/yuki-kishi.jpg" alt="Yuki Kishi" loading="lazy">
+      <div class="athlete-card-info">
+        <div class="athlete-card-name">Yuki Kishi</div>
+        <div class="athlete-card-sport">Street Trials</div>
+      </div>
+    </div>
+    <div class="athlete-card reveal">
+      <img src="images/athletes/luna-hoshino.jpg" alt="Luna Hoshino" loading="lazy">
+      <div class="athlete-card-info">
+        <div class="athlete-card-name">Luna Hoshino</div>
+        <div class="athlete-card-sport">Golf</div>
+      </div>
+    </div>
+    <div class="athlete-card reveal">
+      <div style="width:100%;height:100%;background:rgba(255,255,255,0.03);display:flex;align-items:center;justify-content:center;">
+        <span style="font-size:0.7rem;color:var(--text-dim);letter-spacing:0.1em;text-transform:uppercase;">Coming Soon</span>
+      </div>
+      <div class="athlete-card-info">
+        <div class="athlete-card-name">Ayu Nakada</div>
+        <div class="athlete-card-sport">Soccer</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- [4.5] HIGHLIGHTS — 3D Carousel -->
+<section class="highlights" id="highlights">
+  <div class="section-eyebrow">Highlights</div>
+  <div class="highlights-stage">
+    <div class="highlights-pivot">
+      <div class="highlights-carousel" id="hlCarousel">
+        <a href="https://www.instagram.com/frontrowathleteagency/p/DVNfODVklVw/" target="_blank" rel="noopener" class="hl-card" style="background-image:url(images/athletes/miyabi-onitsuka.jpg)">
+          <div class="hl-card-inner">
+            <div class="hl-card-tag">Event</div>
+            <div class="hl-card-title">鬼塚雅<br>× Michael Kors</div>
+            <div class="hl-card-desc">25ansコラボイベント</div>
+          </div>
+        </a>
+        <a href="https://www.instagram.com/frontrowathleteagency/p/DQbg8Jgkgoa/" target="_blank" rel="noopener" class="hl-card" style="background-image:url(images/athletes/takeru-otsuka.jpg)">
+          <div class="hl-card-inner">
+            <div class="hl-card-tag">Collaboration</div>
+            <div class="hl-card-title">大塚健<br>× Burton<br>× Fragment</div>
+            <div class="hl-card-desc">コラボウェアモデル起用</div>
+          </div>
+        </a>
+        <a href="https://frontrowathleteagency.com/news/news25" target="_blank" rel="noopener" class="hl-card" style="background-image:url(images/sports/snowboarding.jpg)">
+          <div class="hl-card-inner">
+            <div class="hl-card-tag">Achievement</div>
+            <div class="hl-card-title">鬼塚雅<br>W杯総合優勝</div>
+            <div class="hl-card-desc">ビッグエア2025</div>
+          </div>
+        </a>
+        <a href="https://frontrowathleteagency.com/news/news03" target="_blank" rel="noopener" class="hl-card" style="background-image:url(images/athletes/miyabi-onitsuka.jpg)">
+          <div class="hl-card-inner">
+            <div class="hl-card-tag">Event</div>
+            <div class="hl-card-title">鬼塚雅<br>× FENDI</div>
+            <div class="hl-card-desc">WORLD OF FENDI</div>
+          </div>
+        </a>
+        <a href="https://frontrowathleteagency.com/news/news28" target="_blank" rel="noopener" class="hl-card" style="background-image:url(images/athletes/takeru-otsuka.jpg)">
+          <div class="hl-card-inner">
+            <div class="hl-card-tag">Achievement</div>
+            <div class="hl-card-title">大塚健<br>Natural Selection</div>
+            <div class="hl-card-desc">世界最高峰予選出場権</div>
+          </div>
+        </a>
+        <a href="https://frontrowathleteagency.com/news/news14" target="_blank" rel="noopener" class="hl-card" style="background-image:url(images/sports/skateboarding.jpg)">
+          <div class="hl-card-inner">
+            <div class="hl-card-tag">Event</div>
+            <div class="hl-card-title">KENZO<br>F/W 2025</div>
+            <div class="hl-card-desc">コレクションローンチ</div>
+          </div>
+        </a>
+        <a href="https://frontrowathleteagency.com/news/news11" target="_blank" rel="noopener" class="hl-card" style="background-image:url(images/sports/windsurfing.jpg)">
+          <div class="hl-card-inner">
+            <div class="hl-card-tag">Event</div>
+            <div class="hl-card-title">鬼塚雅<br>× Netflix</div>
+            <div class="hl-card-desc">10周年イベント</div>
+          </div>
+        </a>
+        <a href="https://frontrowathleteagency.com/news/news18" target="_blank" rel="noopener" class="hl-card" style="background-image:url(images/athletes/haruki-takeuchi.jpg)">
+          <div class="hl-card-inner">
+            <div class="hl-card-tag">Collaboration</div>
+            <div class="hl-card-title">竹内悠貴<br>× BASEFOOD</div>
+            <div class="hl-card-desc">パートナーシップ締結</div>
+          </div>
+        </a>
+      </div>
+    </div>
+  </div>
+  <div class="hl-bottom">
+    <a href="https://www.instagram.com/frontrowathleteagency/" target="_blank" rel="noopener" class="explore-link" style="margin-top:0;">View on Instagram</a>
+  </div>
+</section>
+
+<!-- [5] ABOUT -->
+<section class="services" id="about">
+  <div class="section-eyebrow">About</div>
+  <div class="services-grid">
+    <div class="service-block reveal">
+      <h3>For Athletes</h3>
+      <p>日本で主流の「依頼を待つ」スタイルではなく、<br class="pc-br">コネクションを活かし積極的に営業・契約交渉をする<br class="pc-br">欧米スタイルのスポーツ代理人事務所です。</p>
+      <ul>
+        <li>スポンサー・クラブとの契約交渉</li>
+        <li>パーソナルブランディング</li>
+        <li>大会サポート・通訳</li>
+        <li>キャリアプラン策定</li>
+        <li>ネットワーキング</li>
+      </ul>
+    </div>
+    <div class="service-block reveal">
+      <h3>For Sponsors</h3>
+      <p>ロゴ露出以上の、スポンサーシップを。<br class="pc-br">アスリートを通じた効果的なマーケティング投資へ、<br class="pc-br">戦略策定からアクティベーションまで一気通貫で伴走します。</p>
+      <ul>
+        <li>スポンサーシップ戦略策定</li>
+        <li>アクティベーション企画・実装</li>
+        <li>インパクト調査</li>
+        <li>SNS動画コンテンツ企画制作</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- [6] NEWS -->
+<section class="news" id="news">
+  <div class="section-eyebrow">News</div>
+  <div class="news-list">
+    <a href="#" class="news-item reveal">
+      <span class="news-date">2026.06</span>
+      <span class="news-title">【鬼塚雅】Michael Kors × 25ansのコラボイベントに出席</span>
+    </a>
+    <a href="#" class="news-item reveal">
+      <span class="news-date">2026.05</span>
+      <span class="news-title">【大塚健】Burton × Fragment Designのコラボウェアのモデルに起用</span>
+    </a>
+    <a href="#" class="news-item reveal">
+      <span class="news-date">2026.04</span>
+      <span class="news-title">鬼塚雅がW杯ビッグエア2025総合チャンピオンを獲得</span>
+    </a>
+  </div>
+</section>
+
+<!-- [7] PROFILE -->
+<section class="about" id="profile">
+  <div class="section-eyebrow">Profile</div>
+  <div class="about-content">
+    <div class="about-photo reveal">
+      <img src="images/misc/ogawara-akiha-portrait.jpg" alt="Akiha Ogawara" loading="lazy">
+    </div>
+    <div class="about-text">
+      <div class="about-name reveal">Akiha Ogawara</div>
+      <div class="about-role reveal">CEO &amp; Founder</div>
+      <div class="about-social reveal" style="display:flex;gap:16px;margin-bottom:20px;">
+        <a href="https://www.instagram.com/akihaogawara/" target="_blank" rel="noopener" style="font-size:0.65rem;letter-spacing:0.1em;text-transform:uppercase;color:rgba(255,255,255,0.45);transition:color 0.3s;">Instagram</a>
+        <a href="https://www.linkedin.com/in/akiha-ogawara/" target="_blank" rel="noopener" style="font-size:0.65rem;letter-spacing:0.1em;text-transform:uppercase;color:rgba(255,255,255,0.45);transition:color 0.3s;">LinkedIn</a>
+      </div>
+      <div class="about-credentials">
+        <div class="credential reveal">
+          <div class="credential-num">01</div>
+          <div class="credential-text">元 Red Bull Japan<br>アスリートマーケティングスペシャリスト</div>
+        </div>
+        <div class="credential reveal">
+          <div class="credential-num">02</div>
+          <div class="credential-text">元 PwC コンサルティングジャパン<br>経営コンサルタント</div>
+        </div>
+        <div class="credential reveal">
+          <div class="credential-num">03</div>
+          <div class="credential-text">JBA公認エージェント<br>女性では史上3人目</div>
+        </div>
+      </div>
+      <div class="about-board reveal">
+        <div class="about-board-label">Board Member</div>
+        <div class="about-board-name" style="font-size:1rem;font-weight:500;color:#fff;margin-bottom:8px;">藤原 浩 <span style="color:rgba(255,255,255,0.45);font-weight:300;">— Hiroshi Fujiwara</span></div>
+        <div style="font-size:0.75rem;line-height:1.7;color:rgba(255,255,255,0.55);">
+          fragment design 主宰。ストリートカルチャーの先駆者として Nike, Louis Vuitton, Starbucks 等とコラボレーション。Burton AK457 クリエイティブディレクター。スポーツとファッション・カルチャーの交差点に立つ存在として、FRAAのアスリートを競技の枠を超えた世界へ導く。
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- [8] CONTACT -->
+<section class="contact" id="contact">
+  <h2 class="reveal">Get in Touch</h2>
+  <a href="mailto:akihaogawara@frontrowathleteagency.com" class="contact-email reveal">
+    akihaogawara@frontrowathleteagency.com
+  </a>
+  <div class="contact-address reveal">
+    〒107-0062<br>
+    東京都港区南青山5-15-9<br>
+    フラット青山301
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <span>&copy; 2025 Front Row Athlete Agency</span>
+  <div class="footer-social">
+    <a href="https://www.instagram.com/frontrowathleteagency/" target="_blank" rel="noopener">Instagram</a>
+  </div>
+</footer>
+
+<!-- CDN Scripts -->
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.13.0/gsap.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/SplitText.min.js"></script>
+<script defer src="https://unpkg.com/lenis@1.3.4/dist/lenis.min.js"></script>
+
+<!-- Mobile menu (load前でも動くよう外に出す) -->
+<script>
+function toggleMenu() {
+  const h = document.getElementById('hamburger');
+  const m = document.getElementById('mobileMenu');
+  h.classList.toggle('open');
+  m.classList.toggle('open');
+  const isOpen = m.classList.contains('open');
+  h.setAttribute('aria-expanded', isOpen);
+  document.body.style.overflow = isOpen ? 'hidden' : '';
+}
+</script>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+
+  gsap.registerPlugin(SplitText);
+
+  // ===== Lenis smooth scroll =====
+  const lenis = new Lenis({ duration: 1.2, easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)), autoRaf: false });
+  gsap.ticker.add((time) => lenis.raf(time * 1000));
+  gsap.ticker.lagSmoothing(0);
+
+  // ===== Hero background slideshow (visibilitychange対応) =====
+  const heroBg = document.getElementById('heroBg');
+  const heroImgs = heroBg.querySelectorAll('img');
+  let currentHeroImg = 0;
+  let slideshowTimer = null;
+
+  function nextSlide() {
+    heroImgs[currentHeroImg].classList.remove('active');
+    currentHeroImg = (currentHeroImg + 1) % heroImgs.length;
+    heroImgs[currentHeroImg].classList.add('active');
+  }
+  function startSlideshow() { if (!slideshowTimer) slideshowTimer = setInterval(nextSlide, 4000); }
+  function stopSlideshow() { clearInterval(slideshowTimer); slideshowTimer = null; }
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) stopSlideshow(); else { nextSlide(); startSlideshow(); }
+  });
+  startSlideshow();
+
+  // ===== Hero SplitText (フォント待ち) =====
+  document.fonts.ready.then(() => {
+    document.querySelectorAll('.hero-title .line').forEach((line, i) => {
+      const split = new SplitText(line, { type: 'chars', charsClass: 'char' });
+      gsap.to(split.chars, {
+        opacity: 1, y: 0, duration: 0.8, ease: 'power3.out',
+        stagger: 0.04, delay: 0.3 + i * 0.3
+      });
+    });
+    gsap.to('#heroSub', { opacity: 1, y: 0, duration: 1, ease: 'power2.out', delay: 1.2 });
+  });
+
+  // ===== Reveal (IntersectionObserver — ScrollTrigger不要) =====
+  const revealObs = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        gsap.to(e.target, { opacity: 1, y: 0, duration: 0.8, ease: 'power2.out' });
+        revealObs.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0, rootMargin: '0px 0px -15% 0px' });
+  document.querySelectorAll('.reveal').forEach(el => revealObs.observe(el));
+
+  // ===== Vanilla Tilt (PC限定、動的ロード) =====
+  if (window.matchMedia('(hover: hover)').matches) {
+    const s = document.createElement('script');
+    s.src = 'https://cdnjs.cloudflare.com/ajax/libs/vanilla-tilt/1.8.1/vanilla-tilt.min.js';
+    s.onload = () => VanillaTilt.init(document.querySelectorAll('[data-tilt]'));
+    document.head.appendChild(s);
+  }
+
+  // ===== Highlights 3D Carousel =====
+  const hlCards = document.querySelectorAll('.hl-card');
+  const hlN = hlCards.length;
+  const hlStep = 360 / hlN;
+  const hlCardW = hlCards[0] ? hlCards[0].offsetWidth : 160;
+  const hlR = Math.round(hlCardW * (window.innerWidth < 768 ? 1.45 : 1.15));
+  hlCards.forEach((card, i) => {
+    card.style.transform = `rotateY(${i * hlStep}deg) translateZ(${hlR}px)`;
+  });
+
+  // ===== Smooth scroll for anchor links =====
+  document.querySelectorAll('a[href^="#"]').forEach(a => {
+    a.addEventListener('click', e => {
+      e.preventDefault();
+      const target = document.querySelector(a.getAttribute('href'));
+      if (target) lenis.scrollTo(target, { offset: -60 });
+    });
+  });
+
+});
+</script>
+
+</body>
+</html>
