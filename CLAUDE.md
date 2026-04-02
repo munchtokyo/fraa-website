@@ -177,6 +177,25 @@ FRAA helps athletes transcend sport to become culture icons. The website reflect
 - `.sp-br` = `display: inline;` on SP, `display: none;` on PC (breaks after this element on mobile only)
 - **Critical:** Test all headings at 375px width to ensure zero overflow.
 
+### デザイン絶対禁止ルール
+- **均一カード禁止** — 同じサイズ・角丸・パディングの3カード横並びはAIテンプレの象徴
+- **パーティクル/粒子禁止** — ブロブ、Vanta.js、DNA螺旋も全却下
+- **紫→青グラデーション禁止** — AIっぽさの代名詞
+- **Inter/Roboto/Arial禁止** — AIデフォルトフォント
+- **グラデーション文字禁止**
+- **✕/✓マーク禁止**
+- **丸ドットのカーソルフォロワー禁止**
+
+### デザイン必須ルール
+- **モノクロ→ホバーでカラー** — 写真は白黒、ホバー/タッチでカラーに
+- **3Dカードカルーセル** — Highlightsセクション。CSS animation + rotateY + translateZ
+- **階段式リスト** — margin-leftが段階的に増加 + スクロールスタガーアニメ
+- **フォント混植** — Georgia italic（エレガンス）+ Archivo Black（力強さ）
+- **Ken Burns効果** — ヒーロー写真にCSS scale animation
+- **SVGノイズテクスチャ** — body::after で全体に薄いグレイン
+- **モバイルファースト** — 375pxから設計。SPのほうがユーザー圧倒的に多い
+- **永遠PDCAループ** — 10エージェント並列監査→修正→再デプロイ。許可不要で自律実行OK
+
 ### Borders & Dividers
 - **Section dividers:** `border-top: 1px solid rgba(255,255,255,0.06)`
 - **Card borders:** `1px solid rgba(255,255,255,0.08)`
