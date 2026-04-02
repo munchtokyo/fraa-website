@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>3D Cylinder Carousel — v7</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Archivo+Black&family=Inter:wght@300;400;600&display=swap');
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: #0a0a0a;
+    color: #fff;
+    font-family: 'Inter', sans-serif;
+    overflow-x: hidden;
+  }
+
+  .sports-section {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 20px;
+    position: relative;
+  }
+
+  .section-label {
+    font-size: 0.75rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: #888;
+    margin-bottom: 12px;
+  }
+  .section-label::before { content: '¬ '; color: #9acd32; }
+
+  .section-title {
+    font-family: 'Archivo Black', sans-serif;
+    font-size: clamp(3rem, 8vw, 6rem);
+    text-transform: uppercase;
+    letter-spacing: -0.02em;
+    margin-bottom: 50px;
+    text-align: center;
+  }
+  .section-title em {
+    font-style: italic;
+    font-family: 'Georgia', serif;
+    font-weight: 400;
+  }
+
+  /* ===== カルーセル ===== */
+  .carousel-stage {
+    width: 100%;
+    height: 320px;
+    margin-bottom: 40px;
+    /* perspective はここに置く（子要素全体に効く） */
+    perspective: 1200px;
+    /* 視点を真ん中に固定 */
+    perspective-origin: center center;
+    /* flexで中央揃え */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .carousel {
+    /* サイズ0の点 = 回転軸の中心 */
+    width: 0;
+    height: 0;
+    transform-style: preserve-3d;
+    cursor: grab;
+    position: relative;
+  }
+  .carousel:active { cursor: grabbing; }
+
+  .card {
+    position: absolute;
+    width: 180px;
+    height: 250px;
+    /* カードの中心を回転軸に合わせる */
+    left: -90px;
+    top: -125px;
+    border-radius: 12px;
+    overflow: hidden;
+    backface-visibility: hidden;
+  }
+
+  .card img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: grayscale(100%) brightness(0.6);
+    transition: filter 0.5s;
+  }
+  .card.is-front img {
+    filter: grayscale(0%) brightness(1);
+  }
+
+  .card-overlay {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    padding: 12px 14px;
+    background: linear-gradient(transparent, rgba(0,0,0,0.85));
+  }
+  .card-overlay h3 {
+    font-family: 'Archivo Black', sans-serif;
+    font-size: 0.7rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .card-overlay p {
+    font-size: 0.55rem;
+    color: rgba(255,255,255,0.5);
+    margin-top: 2px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  .current-category {
+    font-family: 'Archivo Black', sans-serif;
+    font-size: clamp(1.5rem, 4vw, 2.5rem);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    text-align: center;
+    min-height: 3rem;
+  }
+
+  .explore-link {
+    display: inline-block;
+    margin-top: 12px;
+    font-size: 0.75rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.5);
+    text-decoration: none;
+  }
+  .explore-link:hover { color: #fff; }
+  .explore-link::after { content: ' ↗'; }
+
+  .carousel-dots {
+    display: flex; gap: 8px; margin-top: 24px;
+  }
+  .carousel-dots .dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: rgba(255,255,255,0.2);
+    cursor: pointer;
+    transition: background 0.3s, transform 0.3s;
+  }
+  .carousel-dots .dot.active {
+    background: #fff; transform: scale(1.4);
+  }
+
+  /* レスポンシブ */
+  @media (min-width: 768px) {
+    .carousel-stage { height: 380px; perspective: 1400px; }
+    .card { width: 210px; height: 290px; left: -105px; top: -145px; }
+  }
+  @media (min-width: 1024px) {
+    .carousel-stage { height: 440px; perspective: 1600px; }
+    .card { width: 240px; height: 330px; left: -120px; top: -165px; border-radius: 14px; }
+  }
+
+  /* グレインテクスチャ */
+  .sports-section::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+    background-size: 128px;
+    pointer-events: none;
+    z-index: 100;
+  }
+</style>
+</head>
+<body>
+
+<section class="sports-section">
+  <span class="section-label">FEATURED</span>
+  <h2 class="section-title">SPO <em>RTS</em></h2>
+
+  <div class="carousel-stage">
+    <div class="carousel" id="carousel">
+      <div class="card" data-category="SNOWBOARDING">
+        <img src="images/sports/snowboarding.jpg" alt="Snowboarding">
+        <div class="card-overlay"><h3>Snowboarding</h3><p>4 Athletes</p></div>
+      </div>
+      <div class="card" data-category="SKATEBOARDING">
+        <img src="images/sports/skateboarding.jpg" alt="Skateboarding">
+        <div class="card-overlay"><h3>Skateboarding</h3><p>2 Athletes</p></div>
+      </div>
+      <div class="card" data-category="WINDSURFING">
+        <img src="images/sports/windsurfing.jpg" alt="Windsurfing">
+        <div class="card-overlay"><h3>Windsurfing</h3><p>1 Athlete</p></div>
+      </div>
+      <div class="card" data-category="SKIING">
+        <img src="images/sports/skiing.jpg" alt="Skiing">
+        <div class="card-overlay"><h3>Skiing</h3><p>1 Athlete</p></div>
+      </div>
+      <div class="card" data-category="FENCING">
+        <img src="images/sports/fencing.jpg" alt="Fencing">
+        <div class="card-overlay"><h3>Fencing</h3><p>1 Athlete</p></div>
+      </div>
+      <div class="card" data-category="OTHER">
+        <img src="images/sports/other.jpg" alt="Other">
+        <div class="card-overlay"><h3>Other</h3><p>4 Athletes</p></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="current-category" id="currentCategory">SNOWBOARDING</div>
+  <a href="#" class="explore-link">Explore</a>
+  <div class="carousel-dots" id="dots"></div>
+</section>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.13.0/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.13.0/Draggable.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.13.0/InertiaPlugin.min.js"></script>
+
+<script>
+gsap.registerPlugin(Draggable, InertiaPlugin);
+
+const carousel = document.getElementById('carousel');
+const cards = [...carousel.querySelectorAll('.card')];
+const categoryEl = document.getElementById('currentCategory');
+const dotsEl = document.getElementById('dots');
+const N = cards.length;
+const STEP = 360 / N;
+
+// カード幅を取得
+const cardW = cards[0].offsetWidth;
+
+// シリンダー半径（コンパクトに — カード幅と同じくらい）
+const R = Math.round(cardW * 1.1);
+
+// ===== 配置 =====
+// transformOrigin のZ値をマイナスにすると、回転軸がカードの後ろ(=シリンダー中心)になる
+// → carousel全体を rotateY すると「コマのように自転」する
+cards.forEach((card, i) => {
+  gsap.set(card, {
+    rotateY: i * STEP,
+    transformOrigin: `50% 50% ${-R}px`
+  });
+});
+
+// ドット生成
+cards.forEach((_, i) => {
+  const d = document.createElement('div');
+  d.className = 'dot' + (i === 0 ? ' active' : '');
+  d.onclick = () => goTo(i);
+  dotsEl.appendChild(d);
+});
+const dots = [...dotsEl.querySelectorAll('.dot')];
+
+// 正面カード検出
+let curIdx = 0;
+function detectFront() {
+  const rot = ((gsap.getProperty(carousel, 'rotateY') % 360) + 360) % 360;
+  let best = 0, bestDiff = 999;
+
+  cards.forEach((card, i) => {
+    const a = ((i * STEP - rot) % 360 + 360) % 360;
+    const diff = Math.min(a, 360 - a);
+    card.classList.toggle('is-front', diff < STEP * 0.4);
+    if (diff < bestDiff) { bestDiff = diff; best = i; }
+  });
+
+  if (best !== curIdx) {
+    curIdx = best;
+    categoryEl.textContent = cards[curIdx].dataset.category;
+    dots.forEach((d, i) => d.classList.toggle('active', i === curIdx));
+  }
+}
+
+// 自動回転
+let auto = gsap.to(carousel, {
+  rotateY: '+=360',
+  duration: 30,
+  ease: 'none',
+  repeat: -1,
+  onUpdate: detectFront
+});
+
+// ドラッグ
+Draggable.create(carousel, {
+  type: 'rotation',
+  inertia: true,
+  snap: v => Math.round(v / STEP) * STEP,
+  onPress() { auto.pause(); },
+  onDrag: detectFront,
+  onThrowUpdate: detectFront,
+  onThrowComplete() {
+    const cur = gsap.getProperty(carousel, 'rotateY');
+    auto.kill();
+    auto = gsap.to(carousel, {
+      rotateY: cur + 360,
+      duration: 30,
+      ease: 'none',
+      repeat: -1,
+      onUpdate: detectFront
+    });
+  }
+});
+
+// ドットクリック
+function goTo(idx) {
+  auto.pause();
+  const cur = gsap.getProperty(carousel, 'rotateY');
+  const target = idx * STEP;
+  let diff = target - ((cur % 360) + 360) % 360;
+  if (diff > 180) diff -= 360;
+  if (diff < -180) diff += 360;
+
+  gsap.to(carousel, {
+    rotateY: cur + diff,
+    duration: 0.6,
+    ease: 'power2.inOut',
+    onUpdate: detectFront,
+    onComplete() {
+      const end = gsap.getProperty(carousel, 'rotateY');
+      auto.kill();
+      auto = gsap.to(carousel, {
+        rotateY: end + 360,
+        duration: 30,
+        ease: 'none',
+        repeat: -1,
+        onUpdate: detectFront
+      });
+    }
+  });
+}
+
+cards.forEach((c, i) => c.addEventListener('click', () => goTo(i)));
+</script>
+</body>
+</html>
